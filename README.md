@@ -8,5 +8,5 @@ Windows VM のイベントログを Azure Monitor Agent（AMA）とデータ収�
 - 閉域閲覧端末は Private Endpoint 経由で Log Analytics をクエリします。
 - 完成形では AMPLS の Query / Ingestion を `Private Only`、Log Analytics の公開クエリ / 公開取り込みを無効にします。
 
-詳細は [Azure portal 操作手順書](verification/2026-09-27-azure-vm-dcr-ampls-portal-runbook.md) を参照してください。
+詳細は [Azure portal 操作手順書](verification/azure-vm-dcr-ampls-portal-runbook.md) を参照してください。
 構成図の編集用原本は [draw.io ファイル](assets/azure-vm-dcr-ampls-private-only.drawio) です。
