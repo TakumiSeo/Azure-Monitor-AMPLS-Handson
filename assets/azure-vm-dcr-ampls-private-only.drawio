@@ -1,0 +1,108 @@
+<mxfile host="app.diagrams.net" agent="copilot">
+  <diagram id="azure-vm-private-monitoring" name="Azure VM Private Monitoring">
+    <mxGraphModel dx="1660" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1660" pageHeight="900" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Azure VM ログ監視 | Private Only 構成" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=28;fontStyle=1;fontColor=#17324D;" parent="1" vertex="1">
+          <mxGeometry x="55" y="31" width="1510" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="閉域側からの接続と Azure Monitor リソースの関連" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=15;fontColor=#52677C;" parent="1" vertex="1">
+          <mxGeometry x="57" y="83" width="1510" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="privateSide" value="閉域側" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7FD;strokeColor=#A8C7E3;strokeWidth=2;verticalAlign=top;align=left;fontFamily=Meiryo;fontStyle=1;fontSize=17;fontColor=#17324D;spacingTop=15;spacingLeft=17;" parent="1" vertex="1">
+          <mxGeometry x="52" y="156" width="283" height="618" as="geometry"/>
+        </mxCell>
+        <mxCell id="vmCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0078D4;strokeWidth=2;shadow=1;" parent="privateSide" vertex="1">
+          <mxGeometry x="25" y="89" width="232" height="176" as="geometry"/>
+        </mxCell>
+        <mxCell id="vmIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/compute/Virtual_Machine.svg;" parent="vmCard" vertex="1">
+          <mxGeometry x="83" y="22" width="66" height="66" as="geometry"/>
+        </mxCell>
+        <mxCell id="vmText" value="&lt;b&gt;Windows VM&lt;/b&gt;&lt;br&gt;Azure Monitor Agent" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=16;fontColor=#17324D;" parent="vmCard" vertex="1">
+          <mxGeometry x="12" y="99" width="208" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="clientCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#587C9E;strokeWidth=2;shadow=1;" parent="privateSide" vertex="1">
+          <mxGeometry x="25" y="332" width="232" height="176" as="geometry"/>
+        </mxCell>
+        <mxCell id="clientIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/identity/Users.svg;" parent="clientCard" vertex="1">
+          <mxGeometry x="83" y="22" width="66" height="66" as="geometry"/>
+        </mxCell>
+        <mxCell id="clientText" value="&lt;b&gt;閉域閲覧端末&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=16;fontColor=#17324D;" parent="clientCard" vertex="1">
+          <mxGeometry x="12" y="104" width="208" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="peCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0078D4;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="355" width="223" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="peIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/Private_Endpoint.svg;" parent="peCard" vertex="1">
+          <mxGeometry x="79" y="22" width="65" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="peText" value="&lt;b&gt;Private Endpoint&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=16;fontColor=#17324D;" parent="peCard" vertex="1">
+          <mxGeometry x="11" y="107" width="201" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="amplsCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0078D4;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="355" width="253" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="amplsIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/Private_Link.svg;" parent="amplsCard" vertex="1">
+          <mxGeometry x="94" y="15" width="65" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="amplsText" value="&lt;b&gt;AMPLS&lt;/b&gt;&lt;br&gt;Query: Private Only&lt;br&gt;Ingestion: Private Only" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=14;fontColor=#17324D;" parent="amplsCard" vertex="1">
+          <mxGeometry x="9" y="88" width="235" height="77" as="geometry"/>
+        </mxCell>
+        <mxCell id="dceCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E7157B;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="1070" y="211" width="243" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="dceIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/management_governance/Monitor.svg;" parent="dceCard" vertex="1">
+          <mxGeometry x="89" y="19" width="65" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="dceText" value="&lt;b&gt;DCE&lt;/b&gt;&lt;br&gt;データ収集エンドポイント" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=15;fontColor=#17324D;" parent="dceCard" vertex="1">
+          <mxGeometry x="11" y="97" width="221" height="63" as="geometry"/>
+        </mxCell>
+        <mxCell id="lawCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E7157B;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="1070" y="500" width="243" height="194" as="geometry"/>
+        </mxCell>
+        <mxCell id="lawIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/analytics/Log_Analytics_Workspaces.svg;" parent="lawCard" vertex="1">
+          <mxGeometry x="89" y="15" width="65" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="lawText" value="&lt;b&gt;Log Analytics&lt;/b&gt;&lt;br&gt;公開クエリ: 無効&lt;br&gt;公開取り込み: 無効" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=14;fontColor=#17324D;" parent="lawCard" vertex="1">
+          <mxGeometry x="9" y="92" width="225" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="alertCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E7157B;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+          <mxGeometry x="1410" y="508" width="203" height="184" as="geometry"/>
+        </mxCell>
+        <mxCell id="alertIcon" value="" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/management_governance/Alerts.svg;" parent="alertCard" vertex="1">
+          <mxGeometry x="70" y="19" width="63" height="63" as="geometry"/>
+        </mxCell>
+        <mxCell id="alertText" value="&lt;b&gt;ログ検索アラート&lt;/b&gt;&lt;br&gt;Action Group" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Meiryo;fontSize=14;fontColor=#17324D;" parent="alertCard" vertex="1">
+          <mxGeometry x="10" y="100" width="183" height="62" as="geometry"/>
+        </mxCell>
+        <mxCell id="vmToPe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.28;" parent="1" source="vmCard" target="peCard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="367" y="333"/><mxPoint x="367" y="405"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="clientToPe" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.77;" parent="1" source="clientCard" target="peCard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="367" y="576"/><mxPoint x="367" y="494"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="peToAmpls" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="peCard" target="amplsCard" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="amplsToDce" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.28;entryX=0;entryY=0.5;" parent="1" source="amplsCard" target="dceCard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1023" y="405"/><mxPoint x="1023" y="301"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="amplsToLaw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.76;entryX=0;entryY=0.5;" parent="1" source="amplsCard" target="lawCard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="1023" y="492"/><mxPoint x="1023" y="597"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lawToAlert" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#527BA3;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" parent="1" source="lawCard" target="alertCard" edge="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
