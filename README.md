@@ -10,5 +10,3 @@ Windows VM のイベントログを Azure Monitor Agent（AMA）とデータ収�
 
 詳細は [Azure portal 操作手順書](verification/2026-09-27-azure-vm-dcr-ampls-portal-runbook.md) を参照してください。
 構成図の編集用原本は [draw.io ファイル](assets/azure-vm-dcr-ampls-private-only.drawio) です。
-
-**状態:** デプロイ・動作検証は未実施です。
