@@ -32,6 +32,17 @@ DCE は AMA の**構成取得**のために使う。[^1][^2][^3]
 | DCR × 1 + AMA | Application/Error の収集、任意の CPU カウンター | 8 |
 | Workbook、ダッシュボード、Action Group、ログ アラート | 表示と発火確認 | 10、11、12 |
 
+作業は次の順に進める。
+
+```mermaid
+flowchart LR
+    base["2-5<br/>VNet・VM・LAW・DCE"] --> link["6-7<br/>AMPLS・PE・DNS"]
+    link --> dcr["8<br/>DCR・AMA"]
+    dcr --> verify["9<br/>疎通・取り込み確認"]
+    verify --> view["10-12<br/>可視化・アラート"]
+    view --> close["13<br/>公開アクセス無効化"]
+```
+
 ### 1.1 使用する値
 
 次の値は例示の仮名である。
@@ -140,8 +151,20 @@ AMPLS は Private Endpoint から接続する Azure Monitor リソースの範�
 
 今回の AMPLS には `＜law＞` と `＜dce＞` を登録する。
 
-- VM の AMA は PE 経由で DCE から構成を取得し、イベントを `＜law＞` に送る。
-- 閉域閲覧端末は PE 経由で `＜law＞` のログをクエリする。[^2][^4]
+VM と閉域閲覧端末は、同じ PE を経由して AMPLS に登録されたリソースへ接続する。[^2][^4]
+
+```mermaid
+flowchart LR
+    vm["VM（AMA）"] -->|"① 構成取得"| pe["Private Endpoint"]
+    vm -->|"② ログ送信"| pe
+    client["閉域閲覧端末"] -->|"③ クエリ"| pe
+    subgraph ampls["AMPLS に登録された範囲"]
+        dce["DCE"]
+        law[("Log Analytics")]
+    end
+    pe -->|"①"| dce
+    pe -->|"② ③"| law
+```
 
 アクセス モードは、PE に接続するネットワークから AMPLS 外へ到達できるかを制御する。
 
@@ -206,7 +229,8 @@ AMPLS は Private Endpoint から接続する Azure Monitor リソースの範�
    VM は構成取得用 DCE を一つだけ関連付けられる。
    別 DCE を追加すると既存の関連付けを置き換えるため、共有 VM であれば事前承認を必ず取得。[^2]
 2. **[追加]** で `＜vm＞` を選択し **[適用]**。
-   DCR 作成ウィザードの **[リソース]** タブに **[データ収集エンドポイントの有効化]** が表示される場合も、同じ `＜dce＞` が VM に関連付くよう照合する。
+   DCR 作成の旧画面 (Classic) では **[リソース]** タブに **[データ収集エンドポイントの有効化]** が表示される。
+   その場合も、同じ `＜dce＞` が VM に関連付くよう照合する。
    DCR の **[基本]** の DCE 欄はデータ ソース用のインジェスト指定であり、Windows イベント → Log Analytics の構成取得用関連付けとは別。[^1][^3]
 
 ### 8.2 VM ゲストの Windows イベントを収集する DCR
@@ -225,14 +249,15 @@ AMPLS は Private Endpoint から接続する Azure Monitor リソースの範�
 
 3. **[リソース] → [リソースの追加]** で `＜vm＞` を選択。
    ID 選択欄が表示されたら VM の既存 ID 運用に合わせる。
-   **[データ収集エンドポイントの有効化]** 欄がある場合は有効にし、当該 VM に `＜dce＞` を指定して、手順 8.1 と一致させる。
+   既定の画面では VM と DCE の関連付けを手順 8.1 で行う。
+   旧画面で **[データ収集エンドポイントの有効化]** 欄が表示された場合は、当該 VM に `＜dce＞` を指定して手順 8.1 と一致させる。
    DCR 関連付けで AMA が未導入なら portal が導入する。[^1]
-4. **[収集して配信 (Collect and deliver)] → [データ ソースの追加] → [データ ソース]** で **[Windows イベント ログ]** を選ぶ。
+4. **[収集して配信 (Collect and deliver)] → [新しいデータフローの追加 (Add new dataflow)]** を開き、データ ソースの種類で **[Windows イベント ログ]** を選ぶ。
    **[基本]** でログ `Application`、レベル `Error` のみ選択。
    `System`、`Security`、`Information` は選択しない。
    **[宛先]** で種類 **[Azure Monitor ログ]**、ワークスペース `＜law＞` を選択しデータ ソースを保存する。
    収集される先は `Event` テーブル。[^1][^6]
-5. **任意: CPU グラフも検証する場合のみ**、もう一度 **[データ ソースの追加] → [パフォーマンス カウンター]** を選ぶ。
+5. **任意: CPU グラフも検証する場合のみ**、もう一度 **[新しいデータフローの追加]** を開き、**[パフォーマンス カウンター]** を選ぶ。
    カスタムで Windows カウンター `\Processor(_Total)\% Processor Time`、サンプル間隔 60 秒、宛先 **[Azure Monitor ログ] → `＜law＞`** を指定。
    `Perf` テーブルを確認するため、**[Azure Monitor メトリック (プレビュー)]** を宛先の代用にしない。
    不要ならデータ ソース自体を作らない。[^7]
@@ -385,7 +410,7 @@ Write-EventLog -LogName Application -Source $source -EventId 9001 -EntryType Err
    | where EventLog == "Application" and Source == "AzureVmDcrPoc" and EventID == 9001
    ```
 
-3. **[条件] → [測定]** は **[テーブル行]**、**[アラート ロジック]** は **静的しきい値 / より大きい / 0**、評価の頻度 **5 分**、集計の粒度（評価対象期間）**15 分**。
+3. **[条件] → [測定]** は **[テーブル行]**、**[アラート ロジック]** は **静的しきい値 / より大きい / 0**、評価の頻度 **5 分**、集計の粒度（ウィンドウ サイズ）**15 分**。
    時間窓の初期値が 5 分の場合は明示的に 15 分へ変更。
    1 VM だけなのでディメンションによる分割はしない。[^16]
 4. **[アクション] → [アクション グループの追加]** で `＜ag＞` を選択。
@@ -393,8 +418,17 @@ Write-EventLog -LogName Application -Source $source -EventId 9001 -EntryType Err
    **[確認および作成] → [作成]**。
    アラートは評価回数に応じた料金を生じ得るため実施後に無効化を予定する。[^16]
 5. **古いテスト イベントが 15 分窓の外に出たことを KQL で確認**した後、手順 9.2 の `Write-EventLog` をもう一度実行する。
-   `Event` クエリの新規行、**[モニター] → [アラート] → [アラート インスタンス]** の `Fired`、Action Group の通知メールを順に照合する。
+   次の順に照合する。
    メールが来なくても `Fired` の有無を先に調べる。[^16]
+
+   ```mermaid
+   flowchart LR
+       event["Write-EventLog<br/>Event ID 9001"] --> table["Event テーブル<br/>新規行"]
+       table --> rule["ログ検索アラート<br/>5 分ごとに評価"]
+       rule --> fired["アラート インスタンス<br/>Fired"]
+       fired --> ag["Action Group"]
+       ag --> mail["通知メール"]
+   ```
 
 **完了確認:** 新規イベント、`Event` の新規行、`Fired` インスタンス、承認先への通知の四つを同じテストで確認できる。
 
@@ -412,6 +446,16 @@ Write-EventLog -LogName Application -Source $source -EventId 9001 -EntryType Err
 他ワークスペース宛ての送信抑止が要件ならネットワーク FW で公開エンドポイント向け送信の遮断も別途設計する。[^5]
 
 ### 13.2 公開アクセスの切替手順（共有基盤の場合は承認必須）
+
+```mermaid
+flowchart TD
+    pre{"前提は揃ったか<br/>（手順 1）"} -->|いいえ| stop(["変更しない"])
+    pre -->|はい| mode["AMPLS の Query / Ingestion が<br/>Private Only であることを確認"]
+    mode --> law["LAW の公開取り込み・<br/>公開クエリを無効化"]
+    law --> retest{"閉域側で<br/>成功したか"}
+    retest -->|いいえ| back["原因を確認し、承認を得て<br/>切替前の設定に戻す"]
+    retest -->|はい| negative["非接続端末からの<br/>クエリ拒否を確認"]
+```
 
 1. 作業前に、手順 9～12 が Private Endpoint 経由で動くこと、同じ DNS を使う他のワークスペース・DCE・閲覧端末が把握されていること、切り戻し方法と承認者が明確であることを確認する。
    **一つでも不明なら変更しない。**[^4][^5]
@@ -451,8 +495,8 @@ Write-EventLog -LogName Application -Source $source -EventId 9001 -EntryType Err
 [^1]: Azure Monitor を使用して仮想マシンからゲスト ログ データを収集する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/data-collection
 [^2]: 仮想マシンと Kubernetes クラスターのプライベート リンクを有効にする, https://learn.microsoft.com/ja-jp/azure/azure-monitor/fundamentals/private-link-vm-kubernetes
 [^3]: Azure Monitor のデータ収集エンドポイント, https://learn.microsoft.com/ja-jp/azure/azure-monitor/data-collection/data-collection-endpoint-overview
-[^4]: Azure Monitor のプライベート リンクを構成する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/private-link-configure
-[^5]: Azure Monitor のプライベート リンク構成を設計する / Azure Private Link を使用してネットワークを Azure Monitor に接続する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/private-link-design ; https://learn.microsoft.com/ja-jp/azure/azure-monitor/logs/private-link-security
+[^4]: Azure Monitor のプライベート リンクを構成する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/fundamentals/private-link-configure
+[^5]: Azure Monitor のプライベート リンク構成を設計する / Azure Private Link を使用してネットワークを Azure Monitor に接続する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/fundamentals/private-link-design ; https://learn.microsoft.com/ja-jp/azure/azure-monitor/fundamentals/private-link-security
 [^6]: Azure Monitor を使用して仮想マシンから Windows イベントを収集する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/data-collection-windows-events
 [^7]: Azure Monitor を使用して仮想マシンからパフォーマンス カウンターを収集する, https://learn.microsoft.com/ja-jp/azure/azure-monitor/vm/data-collection-performance
 [^8]: Azure Monitor アクション グループ, https://learn.microsoft.com/ja-jp/azure/azure-monitor/alerts/action-groups
